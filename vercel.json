@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "installCommand": "cd backend && npm install",
+  "buildCommand": "npm run build",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" }
+  ],
+  "functions": { "api/[[...path]].js": { "maxDuration": 60 } }
+}

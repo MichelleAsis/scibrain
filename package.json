@@ -1,0 +1,8 @@
+{
+  "name": "scibrain",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/copy-public.js",
+    "vercel-build": "node scripts/copy-public.js"
+  }
+}
