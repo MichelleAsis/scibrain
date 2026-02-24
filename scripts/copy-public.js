@@ -1,9 +1,14 @@
-// Copy all pages and home assets to project root so Vercel serves them (fixes 404)
+// Copy pages to root for Vercel static serving (so /Dashboard/, /UploadPage/ etc. work)
 const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
-const pagesDir = path.join(root, 'src', 'pages');
+const pagesDir = path.join(root, 'pages');
+
+if (!fs.existsSync(pagesDir)) {
+  console.log('No pages/ folder, skipping copy.');
+  process.exit(0);
+}
 
 function copyRecursive(src, dest) {
   const stat = fs.statSync(src);
@@ -17,34 +22,26 @@ function copyRecursive(src, dest) {
   }
 }
 
-// 1. Home page at root
-const home = path.join(pagesDir, 'HomePage');
-['index.html', 'styles.css', 'script.js'].forEach((file) => {
-  const src = path.join(home, file);
-  if (fs.existsSync(src)) {
-    fs.copyFileSync(src, path.join(root, file));
-    console.log('Copied:', path.relative(root, src), '->', file);
-  }
-});
-if (fs.existsSync(path.join(root, 'favicon.ico'))) {
-  console.log('favicon.ico at root (ok)');
-}
-
-// 2. Other pages as /PageName/...
 const pageFolders = fs.readdirSync(pagesDir).filter((name) => {
   const full = path.join(pagesDir, name);
-  return fs.statSync(full).isDirectory() && name !== 'HomePage';
+  return fs.statSync(full).isDirectory();
 });
+
 for (const name of pageFolders) {
   const srcDir = path.join(pagesDir, name);
   const destDir = path.join(root, name);
-  if (fs.existsSync(destDir)) {
-    try {
-      fs.rmSync(destDir, { recursive: true });
-    } catch (_) {}
-  }
+  if (fs.existsSync(destDir)) try { fs.rmSync(destDir, { recursive: true }); } catch (_) {}
   copyRecursive(srcDir, destDir);
   console.log('Copied page:', name);
 }
 
-console.log('Public files ready for Vercel.');
+// Ensure home page at root (use src/pages/HomePage if present, else leave existing)
+const homeSrc = path.join(root, 'src', 'pages', 'HomePage', 'index.html');
+if (fs.existsSync(homeSrc) && !fs.existsSync(path.join(root, 'index.html'))) {
+  fs.copyFileSync(homeSrc, path.join(root, 'index.html'));
+  fs.copyFileSync(path.join(root, 'src', 'pages', 'HomePage', 'styles.css'), path.join(root, 'styles.css'));
+  fs.copyFileSync(path.join(root, 'src', 'pages', 'HomePage', 'script.js'), path.join(root, 'script.js'));
+  console.log('Copied HomePage to root');
+}
+
+console.log('Build done.');

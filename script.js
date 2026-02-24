@@ -94,9 +94,9 @@ async function checkAuthStatus() {
 
         console.log('🔍 Verifying session token...');
         
-        // Auto-detect backend URL
+        // Auto-detect backend URL (backend runs HTTP by default; use same protocol as page when deployed)
         const backendURL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-            ? 'https://127.0.0.1:3000' 
+            ? 'http://127.0.0.1:3000' 
             : window.location.origin;
         
         const response = await fetch(`${backendURL}/api/auth/verify`, {
@@ -248,7 +248,7 @@ function updateNavbarForGuest() {
     });
     
     loginButton.addEventListener('click', () => {
-        window.location.href = '../LoginPage/index.html';
+        window.location.href = '../SciBrain/LoginPage/index.html';
     });
     
     navLinks.appendChild(loginButton);
@@ -265,8 +265,7 @@ async function handleLogout() {
     if (sessionToken) {
         try {
             // Call logout endpoint
-            const backendURL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'https://127.0.0.1:3000' : window.location.origin;
-            await fetch(`${backendURL}/api/auth/logout`, {
+            await fetch((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:3000' : window.location.origin) + '/api/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`,

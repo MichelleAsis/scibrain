@@ -3,7 +3,10 @@
   "installCommand": "cd backend && npm install",
   "buildCommand": "npm run build",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api", "destination": "/api" }
   ],
-  "functions": { "api/[[...path]].js": { "maxDuration": 60 } }
+  "functions": {
+    "api/[[...path]].js": { "maxDuration": 60 }
+  }
 }

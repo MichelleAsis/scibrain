@@ -124,8 +124,8 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log('   5. Enjoy SciBrain on mobile! 🎉');
     console.log('');
     console.log('🔌 Backend should be running on:');
-    console.log(`   Computer: https://127.0.0.1:3000`);
-    console.log(`   Mobile:   https://${LOCAL_IP}:3000`);
+    console.log(`   Computer: http://127.0.0.1:3000`);
+    console.log(`   Mobile:   http://${LOCAL_IP}:3000`);
     console.log('');
     console.log('✅ Ready!');
 });
